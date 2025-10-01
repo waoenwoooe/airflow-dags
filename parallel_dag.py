@@ -1,5 +1,5 @@
 from airflow.decorators import dag, task
-from airflow.models.baseoperator import chain
+from airflow.models.baseoperator import cross_downstream
 from time import sleep
 
 @dag(schedule=None)
@@ -7,19 +7,30 @@ def parallel_dag():
     @task
     def task_1():
         sleep(30)
+        return 'Task 1 completed'
 
     @task
     def task_2():
         sleep(30)
+        return 'Task 2 completed'
 
     @task
     def task_3():
         sleep(30)
+        return 'Task 3 completed'
         
     @task
     def task_4():
-        print('Done')
+        print('All parallel tasks completed')
+        return 'Done'
 
-    chain([task_1(), task_2(), task_3()], task_4())
+    # 병렬 실행을 위해 cross_downstream 사용
+    t1 = task_1()
+    t2 = task_2()
+    t3 = task_3()
+    t4 = task_4()
+    
+    # t1, t2, t3가 병렬로 실행되고, 모두 완료되면 t4가 실행됨
+    cross_downstream([t1, t2, t3], [t4])
 
 parallel_dag()
