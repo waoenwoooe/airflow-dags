@@ -1,21 +1,27 @@
 from airflow.decorators import dag, task
 from time import sleep
 
-@dag(schedule=None)
+@dag(schedule=None, catchup=False)
 def parallel_dag():
     @task
     def task_1():
-        sleep(30)
+        print("Starting task 1")
+        sleep(5)  # 30초에서 5초로 단축
+        print("Task 1 completed")
         return 'Task 1 completed'
 
     @task
     def task_2():
-        sleep(30)
+        print("Starting task 2")
+        sleep(5)  # 30초에서 5초로 단축
+        print("Task 2 completed")
         return 'Task 2 completed'
 
     @task
     def task_3():
-        sleep(30)
+        print("Starting task 3")
+        sleep(5)  # 30초에서 5초로 단축
+        print("Task 3 completed")
         return 'Task 3 completed'
         
     @task
